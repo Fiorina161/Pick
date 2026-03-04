@@ -198,7 +198,7 @@ internal static class Program
 		if (history.Recent.Count > 0)
 			list.Add(RECENT_CATEGORY_NAME);
 
-		list.AddRange(config.Sections.Keys.OrderBy(x => x, StringComparer.CurrentCultureIgnoreCase));
+		list.AddRange(config.Sections.Keys);
 
 		return list;
 	}
@@ -221,7 +221,7 @@ internal static class Program
 		}
 
 		return config.Sections.TryGetValue(categoryName, out var taskList) 
-			? taskList.OrderBy(t => t.Name, StringComparer.CurrentCultureIgnoreCase).Select(t => new LaunchItem(t.Name, t.Name, t.Command, categoryName)).ToList() 
+			? taskList.Select(t => new LaunchItem(t.Name, t.Name, t.Command, categoryName)).ToList() 
 			: [];
 	}
 }
