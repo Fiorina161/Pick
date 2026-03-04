@@ -12,16 +12,14 @@ internal static class ProcessLauncher
      * Launches a shell command, ensuring commands execute as they would in an
      * interactive terminal session with proper environment context.
      */
-	public static Process Start(string command, string workingDirectory)
+	public static int Start(string command, string workingDirectory)
 	{
-		var psi = OperatingSystem.IsWindows()
-			? new ProcessStartInfo("cmd.exe", $"/C {command}")
-			: new ProcessStartInfo(File.Exists("/bin/bash") ? "/bin/bash" : "/bin/sh", $"-lc \"{command}\"");
+		var (fileName, args) = OperatingSystem.IsWindows()
+			? ("cmd.exe", ["/C", command])
+			: (File.Exists("/bin/bash") ? "/bin/bash" : "/bin/sh", new[] { "-lc", $"\"{command}\"" });
 
-		psi.WorkingDirectory = workingDirectory;
-		psi.UseShellExecute = false;
-
-		return Process.Start(psi) ?? throw new InvalidOperationException("Process start failed.");
+		var pid = TryLaunch(useShellExecute: false, createNoWindow: false, workingDirectory, fileName, args);
+		return pid != 0 ? pid : throw new InvalidOperationException("Process start failed.");
 	}
 
 	/**
@@ -32,42 +30,41 @@ internal static class ProcessLauncher
 		try
 		{
 			if (OperatingSystem.IsWindows())
-			{
-				// Use cmd.exe with start command and empty window title to open file with associated program
-				var psi = new ProcessStartInfo("cmd.exe")
-				{
-					UseShellExecute = false,
-					CreateNoWindow = true
-				};
-				psi.ArgumentList.Add("/c");
-				psi.ArgumentList.Add("start");
-				psi.ArgumentList.Add(""); // Empty window title
-				psi.ArgumentList.Add(filePath);
-				return Process.Start(psi) is not null;
-			}
+				return TryLaunch(useShellExecute: false, createNoWindow: true, null, "cmd.exe", "/c", "start", "", filePath) != 0;
 
 			if (OperatingSystem.IsMacOS())
-				return TryLaunch("open", "-e", filePath);
+				return TryLaunch(useShellExecute: true, createNoWindow: false, null, "open", "-e", filePath) != 0;
 
 			var editor = Environment.GetEnvironmentVariable("EDITOR");
-			return !string.IsNullOrWhiteSpace(editor) && TryLaunch(editor, filePath) || TryLaunch("xdg-open", filePath);
+			return !string.IsNullOrWhiteSpace(editor) && TryLaunch(useShellExecute: true, createNoWindow: false, null, editor, filePath) != 0
+				|| TryLaunch(useShellExecute: true, createNoWindow: false, null, "xdg-open", filePath) != 0;
 		}
 		catch { return false; }
 	}
 
 	/**
-     * Safely attempts to start a process without throwing exceptions.
+     * Safely attempts to start a process, waits for completion, and returns the process ID.
      */
-	private static bool TryLaunch(string fileName, params string[] args)
+	private static int TryLaunch(bool useShellExecute, bool createNoWindow, string? workingDirectory, string fileName, params string[] args)
 	{
 		var psi = new ProcessStartInfo(fileName)
 		{
-			UseShellExecute = true
+			UseShellExecute = useShellExecute,
+			CreateNoWindow = createNoWindow
 		};
+
+		if (!string.IsNullOrWhiteSpace(workingDirectory))
+			psi.WorkingDirectory = workingDirectory;
 
 		foreach (var arg in args)
 			psi.ArgumentList.Add(arg);
 
-		return Process.Start(psi) is not null;
+		using var process = Process.Start(psi);
+		if (process != null)
+		{
+			process.WaitForExit();
+			return process.Id;
+		}
+		return 0;
 	}
 }

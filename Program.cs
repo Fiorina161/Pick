@@ -105,15 +105,16 @@ internal static class Program
 				var item = tasks[selectedTaskByCategory[categoryName]];
 				try
 				{
-					var proc = ProcessLauncher.Start(item.Command, Path.GetDirectoryName(configManager.ConfigPath) ?? Environment.CurrentDirectory);
+					var pid = ProcessLauncher.Start(item.Command, Path.GetDirectoryName(configManager.ConfigPath) ?? Environment.CurrentDirectory);
+
 					historyManager.Add(item);
 					historyManager.Prune(config);
 
 					// Inform the user about the launch even if history saving fails,
 					// since the main action (launching the process) succeeded.
 					status = historyManager.Save(configManager.ConfigPath, out var err)
-						? $"Launched {item.OriginalName} (PID {proc.Id}): {item.Command}"
-						: $"Launched {item.OriginalName} (PID {proc.Id}): {item.Command}, but failed to save recents: {err}";
+						? $"Launched {item.OriginalName} (PID {pid}): {item.Command}"
+						: $"Launched {item.OriginalName} (PID {pid}): {item.Command}, but failed to save recents: {err}";
 				}
 				catch (Exception ex) { status = $"Launch failed for '{item.Command}': {ex.Message}"; }
 			}
