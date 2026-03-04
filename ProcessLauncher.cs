@@ -3,20 +3,20 @@
 namespace pick;
 
 /**
- * Provides cross-platform process launching capabilities, abstracting platform-specific
- * shell invocation and editor handling to enable consistent external command execution.
- */
+* Provides cross-platform process launching capabilities, abstracting platform-specific
+* shell invocation and editor handling to enable consistent external command execution.
+*/
 internal static class ProcessLauncher
 {
 	/**
-	 * Launches a shell command, ensuring commands execute as they would in an
-	 * interactive terminal session with proper environment context.
-	 */
+     * Launches a shell command, ensuring commands execute as they would in an
+     * interactive terminal session with proper environment context.
+     */
 	public static Process Start(string command, string workingDirectory)
 	{
 		var psi = OperatingSystem.IsWindows()
-			? new ProcessStartInfo("cmd.exe") { ArgumentList = { "/c", command } }
-			: new ProcessStartInfo(File.Exists("/bin/bash") ? "/bin/bash" : "/bin/sh") { ArgumentList = { "-lc", command } };
+			? new ProcessStartInfo("cmd.exe", $"/C {command}")
+			: new ProcessStartInfo(File.Exists("/bin/bash") ? "/bin/bash" : "/bin/sh", $"-lc \"{command}\"");
 
 		psi.WorkingDirectory = workingDirectory;
 		psi.UseShellExecute = false;
@@ -25,14 +25,26 @@ internal static class ProcessLauncher
 	}
 
 	/**
-	 * Attempts to open a file in the user's preferred text editor.
-	 */
+     * Attempts to open a file in the user's preferred text editor.
+     */
 	public static bool TryOpenEditor(string filePath)
 	{
 		try
 		{
 			if (OperatingSystem.IsWindows())
-				return TryLaunch("start", filePath);
+			{
+				// Use cmd.exe with start command and empty window title to open file with associated program
+				var psi = new ProcessStartInfo("cmd.exe")
+				{
+					UseShellExecute = false,
+					CreateNoWindow = true
+				};
+				psi.ArgumentList.Add("/c");
+				psi.ArgumentList.Add("start");
+				psi.ArgumentList.Add(""); // Empty window title
+				psi.ArgumentList.Add(filePath);
+				return Process.Start(psi) is not null;
+			}
 
 			if (OperatingSystem.IsMacOS())
 				return TryLaunch("open", "-e", filePath);
@@ -44,8 +56,8 @@ internal static class ProcessLauncher
 	}
 
 	/**
-	 * Safely attempts to start a process without throwing exceptions.
-	 */
+     * Safely attempts to start a process without throwing exceptions.
+     */
 	private static bool TryLaunch(string fileName, params string[] args)
 	{
 		var psi = new ProcessStartInfo(fileName)

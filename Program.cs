@@ -112,12 +112,14 @@ internal static class Program
 					// Inform the user about the launch even if history saving fails,
 					// since the main action (launching the process) succeeded.
 					status = historyManager.Save(configManager.ConfigPath, out var err)
-						? $"Launched {item.OriginalName} (PID {proc.Id})"
-						: $"Launched {item.OriginalName} (PID {proc.Id}), but failed to save recents: {err}";
+						? $"Launched {item.OriginalName} (PID {proc.Id}): {item.Command}"
+						: $"Launched {item.OriginalName} (PID {proc.Id}): {item.Command}, but failed to save recents: {err}";
 				}
-				catch (Exception ex) { status = $"Launch failed: {ex.Message}"; }
+				catch (Exception ex) { status = $"Launch failed for '{item.Command}': {ex.Message}"; }
 			}
 		}
+
+		AnsiConsole.Clear();
 	}
 
 	/**
@@ -220,8 +222,8 @@ internal static class Program
 				.ToList();
 		}
 
-		return config.Sections.TryGetValue(categoryName, out var taskList) 
-			? taskList.Select(t => new LaunchItem(t.Name, t.Name, t.Command, categoryName)).ToList() 
+		return config.Sections.TryGetValue(categoryName, out var taskList)
+			? taskList.Select(t => new LaunchItem(t.Name, t.Name, t.Command, categoryName)).ToList()
 			: [];
 	}
 }
