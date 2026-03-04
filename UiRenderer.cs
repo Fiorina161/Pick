@@ -54,7 +54,7 @@ internal sealed class UiRenderer
 		{
 			var name = Markup.Escape(item);
 			return i == selected
-				? (active ? $"[black on yellow]> {name}[/]" : $"[yellow]> {name}[/]")
+				? active ? $"[black on yellow]> {name}[/]" : $"[yellow]> {name}[/]"
 				: $"  {name}";
 		}));
 	}
