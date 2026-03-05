@@ -71,8 +71,17 @@ internal static class Program
 
 			if (key == ConsoleKey.E)
 			{
-				status = ProcessLauncher.TryOpenEditor(configManager.ConfigPath) && Reload(configManager, historyManager, ref config, out status)
-					? status : "Could not open editor";
+				using var process = ProcessLauncher.Run($"start /wait {configManager.ConfigPath}");
+				if (process != null)
+				{
+					process.WaitForExit();
+					status = Reload(configManager, historyManager, ref config, out var reloadStatus)
+						? $"[green]{reloadStatus}[/]" : $"[red]{reloadStatus}[/]";
+				}
+				else
+				{
+					status = "[red]Could not open editor[/]";
+				}
 				continue;
 			}
 
@@ -105,18 +114,21 @@ internal static class Program
 				var item = tasks[selectedTaskByCategory[categoryName]];
 				try
 				{
-					var pid = ProcessLauncher.Start(item.Command, Path.GetDirectoryName(configManager.ConfigPath) ?? Environment.CurrentDirectory);
-
+					using var process = ProcessLauncher.Run(item.Command) ?? throw new Exception("Unable to start editor");
+					process.WaitForExit();
 					historyManager.Add(item);
 					historyManager.Prune(config);
 
 					// Inform the user about the launch even if history saving fails,
 					// since the main action (launching the process) succeeded.
 					status = historyManager.Save(configManager.ConfigPath, out var err)
-						? $"Launched {item.OriginalName} (PID {pid}): {item.Command}"
-						: $"Launched {item.OriginalName} (PID {pid}): {item.Command}, but failed to save recents: {err}";
+						? $"[green]OK {Markup.Escape(item.OriginalName)} (PID {process.Id}): {Markup.Escape(item.Command)}[/]"
+						: $"[red]Failed {Markup.Escape(item.OriginalName)} (PID {process.Id}): {Markup.Escape(item.Command)}, but failed to save recents: {Markup.Escape(err)}[/]";
 				}
-				catch (Exception ex) { status = $"Launch failed for '{item.Command}': {ex.Message}"; }
+				catch (Exception ex)
+				{
+					status = $"Launch failed for '{item.Command}': {ex.Message}";
+				}
 			}
 		}
 
@@ -183,8 +195,15 @@ internal static class Program
 		if (key is ConsoleKey.Q or ConsoleKey.Escape)
 			return false;
 
-		if (key == ConsoleKey.E && ProcessLauncher.TryOpenEditor(manager.ConfigPath))
-			Reload(manager, history, ref config, out status);
+		if (key == ConsoleKey.E)
+		{
+			using var process = ProcessLauncher.Run($"start /wait {manager.ConfigPath}");
+			if (process != null)
+			{
+				process.WaitForExit();
+				Reload(manager, history, ref config, out status);
+			}
+		}
 
 		return true;
 	}
@@ -219,7 +238,7 @@ internal static class Program
 			// preventing errors when users clean up their configuration.
 			return history.Recent.OrderByDescending(r => r.LaunchedAt)
 				.Where(r => config.Sections.TryGetValue(r.Section, out var tasks) && tasks.FirstOrDefault(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)) is not null)
-				.Select(r => new LaunchItem($"{r.Key} — {r.Section}", r.Key, config.Sections[r.Section].First(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)).Command, r.Section))
+				.Select(r => new LaunchItem($"({r.Section}) {r.Key}", r.Key, config.Sections[r.Section].First(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)).Command, r.Section))
 				.ToList();
 		}
 

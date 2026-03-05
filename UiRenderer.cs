@@ -25,7 +25,7 @@ internal sealed class UiRenderer
 
 		var title = new Grid();
 		title.AddColumn().AddColumn();
-		title.AddRow("[bold green]pick[/] [dim]-[/] [italic]Task Launcher[/]", $"[dim]{Markup.Escape(configPath)}[/]");
+		title.AddRow("[bold yellow]pick[/] [green]-[/] [italic]Task Launcher[/]", $"[green]{Markup.Escape(configPath)}[/]");
 
 		AnsiConsole.Write(new Panel(title).Border(BoxBorder.Rounded));
 
@@ -39,8 +39,8 @@ internal sealed class UiRenderer
 		AnsiConsole.Write(columns);
 
 		AnsiConsole.WriteLine();
-		AnsiConsole.MarkupLine("[dim]Up/Down move • Left/Right/Tab switch pane • Enter launch • E edit • Q quit[/]");
-		AnsiConsole.MarkupLine($"[yellow]Status:[/] {Markup.Escape(status)}");
+		AnsiConsole.MarkupLine("[green]Up/Down move • Left/Right/Tab switch pane • Enter launch • E edit • Q quit[/]");
+		AnsiConsole.MarkupLine($"[yellow]Status:[/] {status}");
 	}
 
 	/**
@@ -48,7 +48,7 @@ internal sealed class UiRenderer
 	 */
 	private static string BuildList(List<string> items, int selected, bool active)
 	{
-		if (items.Count == 0) return "[dim](empty)[/]";
+		if (items.Count == 0) return "[green](empty)[/]";
 
 		return string.Join(Environment.NewLine, items.Select((item, i) =>
 		{

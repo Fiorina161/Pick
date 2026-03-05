@@ -69,7 +69,9 @@ internal sealed class RecentHistoryManager
 		try
 		{
 			var lines = File.Exists(configPath)
-				? File.ReadAllLines(configPath).Where(l => !IsRecentLine(l)).ToList()
+				? File.ReadAllLines(configPath)
+					.TakeWhile(l => !l.Equals(HEADER_COMMENT, StringComparison.Ordinal))
+					.ToList()
 				: [];
 
 			while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[^1]))
