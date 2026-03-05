@@ -115,15 +115,14 @@ internal static class Program
 				try
 				{
 					using var process = ProcessLauncher.Run(item.Command) ?? throw new Exception("Unable to start editor");
-					process.WaitForExit();
 					historyManager.Add(item);
 					historyManager.Prune(config);
 
 					// Inform the user about the launch even if history saving fails,
 					// since the main action (launching the process) succeeded.
 					status = historyManager.Save(configManager.ConfigPath, out var err)
-						? $"[green]OK {Markup.Escape(item.OriginalName)} (PID {process.Id}): {Markup.Escape(item.Command)}[/]"
-						: $"[red]Failed {Markup.Escape(item.OriginalName)} (PID {process.Id}): {Markup.Escape(item.Command)}, but failed to save recents: {Markup.Escape(err)}[/]";
+						? $"[green]OK[/] (PID {process.Id}): {Markup.Escape(item.Command)}"
+						: $"[red]Failed[/] (PID {process.Id}): {Markup.Escape(err)}";
 				}
 				catch (Exception ex)
 				{
