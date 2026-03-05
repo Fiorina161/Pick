@@ -39,7 +39,7 @@ internal sealed class UiRenderer
 		AnsiConsole.Write(columns);
 
 		AnsiConsole.WriteLine();
-		AnsiConsole.MarkupLine("[green]Up/Down move • Left/Right/Tab switch pane • Enter launch • E edit • Q quit[/]");
+		AnsiConsole.MarkupLine("[dim]Up/Down move • Left/Right/Tab switch pane • Enter launch • E edit • Q quit[/]");
 		AnsiConsole.MarkupLine($"[yellow]Status:[/] {status}");
 	}
 

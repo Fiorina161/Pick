@@ -11,7 +11,7 @@ namespace pick;
 internal static class Program
 {
 	private const string CONFIG_FILE_NAME = "pick.ini";
-	private const string RECENT_CATEGORY_NAME = "Recent...";
+	private const string RECENT_CATEGORY_NAME = "(Recent...)";
 
 	/**
 	 * Orchestrates the main application loop, managing user interaction between
@@ -23,7 +23,7 @@ internal static class Program
 		Console.OutputEncoding = Console.InputEncoding = Encoding.UTF8;
 
 		var configManager = new ConfigManager(CONFIG_FILE_NAME);
-		var historyManager = new RecentHistoryManager(maxRecent: 10);
+		var historyManager = new RecentHistoryManager(maxRecent: 5);
 		var renderer = new UiRenderer();
 
 		var config = TryLoad(configManager, out var status) ?? new Configuration(new());
@@ -237,7 +237,7 @@ internal static class Program
 			// preventing errors when users clean up their configuration.
 			return history.Recent.OrderByDescending(r => r.LaunchedAt)
 				.Where(r => config.Sections.TryGetValue(r.Section, out var tasks) && tasks.FirstOrDefault(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)) is not null)
-				.Select(r => new LaunchItem($"({r.Section}) {r.Key}", r.Key, config.Sections[r.Section].First(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)).Command, r.Section))
+				.Select(r => new LaunchItem($"{r.Section,-15} {r.Key}", r.Key, config.Sections[r.Section].First(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)).Command, r.Section))
 				.ToList();
 		}
 

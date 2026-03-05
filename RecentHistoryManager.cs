@@ -104,13 +104,6 @@ internal sealed class RecentHistoryManager
 		&& tasks.Any(t => t.Name.Equals(key, StringComparison.CurrentCultureIgnoreCase));
 
 	/**
-	 * Identifies lines that belong to the auto-generated recent history section
-	 * by checking for the versioned prefix marker.
-	 */
-	private static bool IsRecentLine(string line) =>
-		GetCommentBody(line)?.StartsWith(PREFIX_V2, StringComparison.Ordinal) ?? false;
-
-	/**
 	 * Encodes a recent item into a pipe-delimited comment line with timestamp,
 	 * escaping special characters to prevent parsing ambiguity.
 	 */
