@@ -23,10 +23,10 @@ internal static class Program
 		Console.OutputEncoding = Console.InputEncoding = Encoding.UTF8;
 
 		var configManager = new ConfigManager(CONFIG_FILE_NAME);
-		var historyManager = new RecentHistoryManager(maxRecent: 5);
+		var historyManager = new RecentHistoryManager(maxRecent: 3);
 		var renderer = new UiRenderer();
 
-		var config = TryLoad(configManager, out var status) ?? new Configuration(new());
+		var config = TryLoad(configManager, out var status) ?? new Configuration([]);
 		historyManager.Load(configManager.ConfigPath);
 		historyManager.Prune(config);
 		historyManager.Save(configManager.ConfigPath, out _);
@@ -114,15 +114,18 @@ internal static class Program
 				var item = tasks[selectedTaskByCategory[categoryName]];
 				try
 				{
-					using var process = ProcessLauncher.Run(item.Command) ?? throw new Exception("Unable to start editor");
+					var process = ProcessLauncher.Run(item.Command) ?? throw new Exception("Unable to start editor");
+					var pid = process.Id;
+					var command = item.Command;
+
 					historyManager.Add(item);
 					historyManager.Prune(config);
 
 					// Inform the user about the launch even if history saving fails,
 					// since the main action (launching the process) succeeded.
 					status = historyManager.Save(configManager.ConfigPath, out var err)
-						? $"[green]OK[/] (PID {process.Id}): {Markup.Escape(item.Command)}"
-						: $"[red]Failed[/] (PID {process.Id}): {Markup.Escape(err)}";
+						? $"[green]Running[/] (PID {pid}): {Markup.Escape(command)}"
+						: $"[red]Failed[/] (PID {pid}): {Markup.Escape(err)}";
 				}
 				catch (Exception ex)
 				{
