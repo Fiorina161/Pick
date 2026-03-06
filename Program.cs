@@ -126,6 +126,7 @@ internal static class Program
 					status = historyManager.Save(configManager.ConfigPath, out var err)
 						? $"[green]Running[/] (PID {pid}): {Markup.Escape(command)}"
 						: $"[red]Failed[/] (PID {pid}): {Markup.Escape(err)}";
+					return;
 				}
 				catch (Exception ex)
 				{
