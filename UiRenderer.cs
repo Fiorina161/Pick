@@ -23,11 +23,17 @@ internal sealed class UiRenderer
 	{
 		AnsiConsole.Clear();
 
-		var title = new Grid();
-		title.AddColumn().AddColumn();
-		title.AddRow("[bold yellow]pick[/] [green]-[/] [italic]Task Launcher[/]", $"[green]{Markup.Escape(configPath)}[/]");
+		var title = new Table()
+			.HideHeaders()
+			.Border(TableBorder.None)
+			.Expand()
+			.AddColumn(new TableColumn(string.Empty).LeftAligned())
+			.AddColumn(new TableColumn(string.Empty).RightAligned());
+		title.AddRow(
+			"[bold yellow]pick[/] [dim]-[/] [green italic]The nice task launcher[/]",
+			$"[green]{Markup.Escape(configPath)}[/]");
 
-		AnsiConsole.Write(new Panel(title).Border(BoxBorder.Rounded));
+		AnsiConsole.Write(new Panel(title).Border(BoxBorder.Rounded).Expand());
 
 		var columns = new Grid();
 		columns.AddColumn(new GridColumn().NoWrap()).AddColumn(new GridColumn());
