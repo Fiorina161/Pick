@@ -23,7 +23,7 @@ internal static class Program
 		Console.OutputEncoding = Console.InputEncoding = Encoding.UTF8;
 
 		var configManager = new ConfigManager(CONFIG_FILE_NAME);
-		var historyManager = new RecentHistoryManager(maxRecent: 3);
+		var historyManager = new RecentHistoryManager(maxRecent: 5);
 		var renderer = new UiRenderer();
 
 		var config = TryLoad(configManager, out var status) ?? new Configuration([]);
@@ -126,7 +126,6 @@ internal static class Program
 					status = historyManager.Save(configManager.ConfigPath, out var err)
 						? $"[green]Running[/] (PID {pid}): {Markup.Escape(command)}"
 						: $"[red]Failed[/] (PID {pid}): {Markup.Escape(err)}";
-					return;
 				}
 				catch (Exception ex)
 				{
