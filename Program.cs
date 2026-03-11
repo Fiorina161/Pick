@@ -26,7 +26,7 @@ internal static class Program
 		var historyManager = new RecentHistoryManager(maxRecent: 5);
 		var renderer = new UiRenderer();
 
-		var config = TryLoad(configManager, out var status) ?? new Configuration([]);
+		var config = TryLoad(configManager, out var status) ?? new Configuration([], []);
 		historyManager.Load(configManager.ConfigPath);
 		historyManager.Prune(config);
 		historyManager.Save(configManager.ConfigPath, out _);
@@ -55,8 +55,10 @@ internal static class Program
 			selectedTaskByCategory.TryAdd(categoryName, 0);
 			selectedTaskByCategory[categoryName] = Math.Clamp(selectedTaskByCategory[categoryName], 0, Math.Max(0, tasks.Count - 1));
 
+			var notes = config.Notes.Values.SelectMany(n => n).ToList();
+
 			renderer.Render(configManager.ConfigPath, categories, selectedCategory,
-				tasks.Select(t => t.DisplayName).ToList(), selectedTaskByCategory[categoryName], focusOnCategories, status);
+				tasks.Select(t => t.DisplayName).ToList(), selectedTaskByCategory[categoryName], focusOnCategories, status, notes);
 
 			var key = Console.ReadKey(intercept: true).Key;
 

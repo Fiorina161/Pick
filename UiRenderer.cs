@@ -19,7 +19,7 @@ internal sealed class UiRenderer
 	 * to where keyboard input will be directed.
 	 */
 	public void Render(string configPath, List<string> categories, int selectedCategory,
-		List<string> tasks, int selectedTask, bool focusOnCategories, string status)
+		List<string> tasks, int selectedTask, bool focusOnCategories, string status, List<string> notes)
 	{
 		AnsiConsole.Clear();
 
@@ -37,16 +37,34 @@ internal sealed class UiRenderer
 
 		var columns = new Grid();
 		columns.AddColumn(new GridColumn().NoWrap()).AddColumn(new GridColumn());
-		columns.AddRow(
-			new Panel(new Markup(BuildList(categories, selectedCategory, focusOnCategories)))
-				.Header("Categories").Border(BoxBorder.Rounded).Expand(),
-			new Panel(new Markup(BuildList(tasks, selectedTask, !focusOnCategories)))
-				.Header("Tasks").Border(BoxBorder.Rounded).Expand());
+		if (notes.Count > 0)
+			columns.AddColumn(new GridColumn());
+
+		var categoriesPanel = new Panel(new Markup(BuildList(categories, selectedCategory, focusOnCategories)))
+			.Header("Categories").Border(BoxBorder.Rounded).Expand();
+		var tasksPanel = new Panel(new Markup(BuildList(tasks, selectedTask, !focusOnCategories)))
+			.Header("Tasks").Border(BoxBorder.Rounded).Expand();
+
+		if (notes.Count > 0)
+			columns.AddRow(categoriesPanel, tasksPanel, new Panel(new Markup(BuildNotesList(notes))).Header("Notes").Border(BoxBorder.Rounded).Expand());
+		//columns.AddRow(new Panel(new Markup(BuildNotesList(notes))).Header("Notes").Border(BoxBorder.Rounded).Expand(),categoriesPanel,tasksPanel);
+		else
+			columns.AddRow(categoriesPanel, tasksPanel);
+
 		AnsiConsole.Write(columns);
 
 		AnsiConsole.WriteLine();
 		AnsiConsole.MarkupLine("[dim]Up/Down move • Left/Right/Tab switch pane • Enter launch • E edit • Q quit[/]");
 		AnsiConsole.MarkupLine($"[yellow]Status:[/] {status}");
+	}
+
+	/**
+	 * Builds a formatted string of note lines, each rendered in red.
+	 */
+	private static string BuildNotesList(List<string> notes)
+	{
+		if (notes.Count == 0) return string.Empty;
+		return string.Join(Environment.NewLine, notes.Select(n => $"[red]{Markup.Escape(n)}[/]"));
 	}
 
 	/**
