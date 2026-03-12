@@ -1,4 +1,4 @@
-﻿namespace pick;
+﻿namespace Sidekick;
 
 /**
  * Manages configuration file discovery, creation, and parsing for the task runner.
@@ -48,7 +48,7 @@ internal sealed class ConfigManager(string filename)
 				continue;
 			}
 
-			// Notes are associated with the current section and displayed separately in the UI
+			// Notes are displayed separately in the UI
 			if (trimmed.StartsWith("--"))
 			{
 				var noteSection = currentSection ?? string.Empty;

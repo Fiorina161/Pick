@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Spectre.Console;
 
-namespace pick;
+namespace Sidekick;
 
 /**
  * Entry point for a terminal-based task launcher that organizes commands into categories.
@@ -10,7 +10,7 @@ namespace pick;
  */
 internal static class Program
 {
-    private const string CONFIG_FILE_NAME = "pick.ini";
+    private const string CONFIG_FILE_NAME = "sidekick.ini";
     private const string RECENT_CATEGORY_NAME = "(Recent...)";
 
     /**
@@ -242,7 +242,7 @@ internal static class Program
             // preventing errors when users clean up their configuration.
             return history.Recent.OrderByDescending(r => r.LaunchedAt)
                 .Where(r => config.Sections.TryGetValue(r.Section, out var tasks) && tasks.FirstOrDefault(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)) is not null)
-                .Select(r => new LaunchItem($"{r.Section,-15} {r.Key}", r.Key, config.Sections[r.Section].First(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)).Command, r.Section))
+                .Select(r => new LaunchItem($"{r.Section} [dim]-[/] {r.Key}", r.Key, config.Sections[r.Section].First(t => t.Name.Equals(r.Key, StringComparison.CurrentCultureIgnoreCase)).Command, r.Section))
                 .ToList();
         }
 

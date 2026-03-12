@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace pick;
+namespace Sidekick;
 
 /**
  * Responsible for rendering the terminal UI for the task picker application.
@@ -9,6 +9,22 @@ namespace pick;
  */
 internal sealed class UiRenderer
 {
+	private static readonly string[] _taglines =
+	[
+		"1. Good design is innovative",
+		"2. Good design makes a product useful",
+		"3. Good design is aesthetic",
+		"4. Good design makes a product understandable",
+		"5. Good design is unobtrusive",
+		"6. Good design is honest",
+		"7. Good design is long-lasting",
+		"8. Good design is thorough down to the last detail",
+		"9. Good design is environmentally-friendly",
+		"10. Good design is as little design as possible"
+	];
+
+	private static readonly Random _rng = new();
+
 	/**
 	 * Renders the complete UI layout including title bar, dual-pane navigation,
 	 * and status information. The display is cleared and redrawn on each call
@@ -30,7 +46,7 @@ internal sealed class UiRenderer
 			.AddColumn(new TableColumn(string.Empty).LeftAligned())
 			.AddColumn(new TableColumn(string.Empty).RightAligned());
 		title.AddRow(
-			"[bold yellow]pick[/] [dim]-[/] [green italic]The nice task launcher[/]",
+			$"[bold yellow]Sidekick[/] [dim]-[/] [green italic]{Markup.Escape(_taglines[_rng.Next(_taglines.Length)])}[/]",
 			$"[green]{Markup.Escape(configPath)}[/]");
 
 		AnsiConsole.Write(new Panel(title).Border(BoxBorder.Rounded).Expand());
@@ -47,7 +63,6 @@ internal sealed class UiRenderer
 
 		if (notes.Count > 0)
 			columns.AddRow(categoriesPanel, tasksPanel, new Panel(new Markup(BuildNotesList(notes))).Header("Notes").Border(BoxBorder.Rounded).Expand());
-		//columns.AddRow(new Panel(new Markup(BuildNotesList(notes))).Header("Notes").Border(BoxBorder.Rounded).Expand(),categoriesPanel,tasksPanel);
 		else
 			columns.AddRow(categoriesPanel, tasksPanel);
 
@@ -63,8 +78,9 @@ internal sealed class UiRenderer
 	 */
 	private static string BuildNotesList(List<string> notes)
 	{
-		if (notes.Count == 0) return string.Empty;
-		return string.Join(Environment.NewLine, notes.Select(n => $"[red]{Markup.Escape(n)}[/]"));
+		return notes.Count == 0
+			? string.Empty
+			: string.Join(Environment.NewLine, notes.Select(n => $"[dim]-[/] [blue]{Markup.Escape(n)}[/]"));
 	}
 
 	/**
@@ -72,14 +88,11 @@ internal sealed class UiRenderer
 	 */
 	private static string BuildList(List<string> items, int selected, bool active)
 	{
-		if (items.Count == 0) return "[green](empty)[/]";
+		if (items.Count == 0)
+			return "[green](empty)[/]";
 
-		return string.Join(Environment.NewLine, items.Select((item, i) =>
-		{
-			var name = Markup.Escape(item);
-			return i == selected
-				? active ? $"[black on yellow]{name}[/]" : $"[yellow]{name}[/]"
-				: name;
-		}));
+		return string.Join(Environment.NewLine, items.Select((item, i) => i == selected
+			? active ? $"[black on yellow]{item}[/]" : $"[yellow]{item}[/]"
+			: item));
 	}
 }

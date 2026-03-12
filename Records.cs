@@ -1,4 +1,4 @@
-﻿namespace pick;
+﻿namespace Sidekick;
 
 internal sealed record LaunchItem(string DisplayName, string OriginalName, string Command, string SourceCategory);
 
