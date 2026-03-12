@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>sk</AssemblyName>
-    <RootNamespace>Sidekick</RootNamespace>
+    <RootNamespace>Kato</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.47.0" />

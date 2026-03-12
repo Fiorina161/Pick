@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11527.330 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sidekick", "Sidekick.csproj", "{2EB2DF38-71D8-10D7-12E2-6CC34FB66E1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kato", "Kato.csproj", "{A096FC3B-7434-410B-EEC0-DBA1D7007887}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2EB2DF38-71D8-10D7-12E2-6CC34FB66E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EB2DF38-71D8-10D7-12E2-6CC34FB66E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EB2DF38-71D8-10D7-12E2-6CC34FB66E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EB2DF38-71D8-10D7-12E2-6CC34FB66E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A096FC3B-7434-410B-EEC0-DBA1D7007887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A096FC3B-7434-410B-EEC0-DBA1D7007887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A096FC3B-7434-410B-EEC0-DBA1D7007887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A096FC3B-7434-410B-EEC0-DBA1D7007887}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A36027D4-22AC-48FE-BCE6-BB2D14DB8EE9}
+		SolutionGuid = {4404A5F0-BBE3-4F22-9BC5-D4242C5A2471}
 	EndGlobalSection
 EndGlobal

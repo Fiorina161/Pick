@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Sidekick;
+namespace Kato;
 
 internal static class ProcessLauncher
 {

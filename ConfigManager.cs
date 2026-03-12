@@ -1,4 +1,4 @@
-﻿namespace Sidekick;
+﻿namespace Kato;
 
 /**
  * Manages configuration file discovery, creation, and parsing for the task runner.

@@ -1,5 +1,5 @@
 ﻿// ReSharper disable GrammarMistakeInComment
-namespace Sidekick;
+namespace Kato;
 
 /**
  * Manages a time-ordered history of recently launched tasks, persisting them
@@ -7,7 +7,7 @@ namespace Sidekick;
  */
 internal sealed class RecentHistoryManager
 {
-	private const string PREFIX_V2 = "sidekick:recent:v2:";
+	private const string PREFIX_V2 = "kato:recent:v2:";
 	private const string HEADER_COMMENT = "; Recent history (auto-generated)";
 	private readonly int _maxRecent;
 

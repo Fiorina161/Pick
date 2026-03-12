@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Spectre.Console;
 
-namespace Sidekick;
+namespace Kato;
 
 /**
  * Entry point for a terminal-based task launcher that organizes commands into categories.
@@ -10,7 +10,7 @@ namespace Sidekick;
  */
 internal static class Program
 {
-    private const string CONFIG_FILE_NAME = "sidekick.ini";
+    private const string CONFIG_FILE_NAME = "kato.ini";
     private const string RECENT_CATEGORY_NAME = "(Recent...)";
 
     /**
