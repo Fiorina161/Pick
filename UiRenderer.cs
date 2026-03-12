@@ -46,7 +46,7 @@ internal sealed class UiRenderer
 			.AddColumn(new TableColumn(string.Empty).LeftAligned())
 			.AddColumn(new TableColumn(string.Empty).RightAligned());
 		title.AddRow(
-			$"[bold yellow]kato[/] [dim]-[/] [green italic]{Markup.Escape(_taglines[_rng.Next(_taglines.Length)])}[/]",
+			$"[bold yellow]Kato[/] [dim]-[/] [green italic]{Markup.Escape(_taglines[_rng.Next(_taglines.Length)])}[/]",
 			$"[green]{Markup.Escape(configPath)}[/]");
 
 		AnsiConsole.Write(new Panel(title).Border(BoxBorder.Rounded).Expand());
