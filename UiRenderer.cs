@@ -62,7 +62,7 @@ internal sealed class UiRenderer
 			.Header("Tasks").Border(BoxBorder.Rounded).Expand();
 
 		if (notes.Count > 0)
-			columns.AddRow(categoriesPanel, tasksPanel, new Panel(new Markup(BuildNotesList(notes))).Header("Notes").Border(BoxBorder.Rounded).Expand());
+			columns.AddRow(categoriesPanel, tasksPanel, new Panel(new Markup(BuildNotesList(notes))).Header("TODO").Border(BoxBorder.Rounded).Expand());
 		else
 			columns.AddRow(categoriesPanel, tasksPanel);
 
