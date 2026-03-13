@@ -87,6 +87,13 @@ internal static class Program
                 continue;
             }
 
+            if (key == ConsoleKey.R)
+            {
+                status = Reload(configManager, historyManager, ref config, out var reloadStatus)
+                    ? $"[green]{reloadStatus}[/]" : $"[red]{reloadStatus}[/]";
+                continue;
+            }
+
             if (key == ConsoleKey.UpArrow)
             {
                 if (focusOnCategories)
