@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>kato</AssemblyName>
     <RootNamespace>Kato</RootNamespace>
+    <Version>1.0.0-local</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.47.0" />

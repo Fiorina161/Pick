@@ -76,7 +76,6 @@ internal static class Program
                 using var process = ProcessLauncher.OpenFileEditor(configManager.ConfigPath);
                 if (process != null)
                 {
-                    process.WaitForExit();
                     status = Reload(configManager, historyManager, ref config, out var reloadStatus)
                         ? $"[green]{reloadStatus}[/]" : $"[red]{reloadStatus}[/]";
                 }
@@ -207,14 +206,9 @@ internal static class Program
             return false;
 
         if (key == ConsoleKey.E)
-        {
-            using var process = ProcessLauncher.OpenFileEditor(manager.ConfigPath);
-            if (process != null)
-            {
-                process.WaitForExit();
-                Reload(manager, history, ref config, out status);
-            }
-        }
+            using (var process = ProcessLauncher.OpenFileEditor(manager.ConfigPath))
+                if (process != null)
+                    Reload(manager, history, ref config, out status);
 
         return true;
     }
