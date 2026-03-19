@@ -80,7 +80,7 @@ internal sealed class UiRenderer
 	{
 		return notes.Count == 0
 			? string.Empty
-			: string.Join(Environment.NewLine, notes.Select(n => $"[dim]-[/] [blue]{Markup.Escape(n)}[/]"));
+			: string.Join(Environment.NewLine, notes.Select(n => $"[dim]-[/] [red]{Markup.Escape(n)}[/]"));
 	}
 
 	/**
