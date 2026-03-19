@@ -62,7 +62,7 @@ internal sealed class UiRenderer
 			.Header("Tasks").Border(BoxBorder.Rounded).Expand();
 
 		if (notes.Count > 0)
-			columns.AddRow(categoriesPanel, tasksPanel, new Panel(new Markup(BuildNotesList(notes))).Header("TODO").Border(BoxBorder.Rounded).BorderColor(Color.Blue).Expand());
+			columns.AddRow(categoriesPanel, tasksPanel, new Panel(new Markup(BuildNotesList(notes))).Header("TODO").Border(BoxBorder.Rounded).BorderColor(Color.Red).Expand());
 		else
 			columns.AddRow(categoriesPanel, tasksPanel);
 
@@ -80,7 +80,7 @@ internal sealed class UiRenderer
 	{
 		return notes.Count == 0
 			? string.Empty
-			: string.Join(Environment.NewLine, notes.Select(n => $"[dim]-[/] [red]{Markup.Escape(n)}[/]"));
+			: string.Join(Environment.NewLine, notes.Select(n => $"[dim]-[/] [blue]{Markup.Escape(n)}[/]"));
 	}
 
 	/**
