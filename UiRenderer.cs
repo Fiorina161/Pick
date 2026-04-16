@@ -25,6 +25,8 @@ internal sealed class UiRenderer
 
 	private static readonly Random _rng = new();
 
+	private readonly string _tagline = _taglines[_rng.Next(_taglines.Length)];
+
 	/**
 	 * Renders the complete UI layout including title bar, dual-pane navigation,
 	 * and status information. The display is cleared and redrawn on each call
@@ -39,6 +41,8 @@ internal sealed class UiRenderer
 	{
 		AnsiConsole.Clear();
 
+		AnsiConsole.MarkupLine($"  [dim]{Markup.Escape(ToUnixPath(Environment.CurrentDirectory))}[/]");
+
 		var title = new Table()
 			.HideHeaders()
 			.Border(TableBorder.None)
@@ -46,8 +50,8 @@ internal sealed class UiRenderer
 			.AddColumn(new TableColumn(string.Empty).LeftAligned())
 			.AddColumn(new TableColumn(string.Empty).RightAligned());
 		title.AddRow(
-			$"[bold yellow]Kato[/] [dim]-[/] [green italic]{Markup.Escape(_taglines[_rng.Next(_taglines.Length)])}[/]",
-			$"[green]{Markup.Escape(configPath)}[/]");
+			$"[bold yellow]Kato[/] [dim]-[/] [green italic]{Markup.Escape(_tagline)}[/]",
+			$"[green]{Markup.Escape(ToUnixPath(configPath))}[/]");
 
 		AnsiConsole.Write(new Panel(title).Border(BoxBorder.Rounded).Expand());
 
@@ -81,6 +85,14 @@ internal sealed class UiRenderer
 		return notes.Count == 0
 			? string.Empty
 			: string.Join(Environment.NewLine, notes.Select(n => $"[dim]-[/] [blue]{Markup.Escape(n)}[/]"));
+	}
+
+	/**
+	 * Converts a Windows-style path to a Unix-style path for consistent display in the terminal.
+	 */
+	private static string ToUnixPath(string path)
+	{
+		return "/" + path[(Path.GetPathRoot(path)?.Length ?? 0)..].Replace('\\', '/');
 	}
 
 	/**
